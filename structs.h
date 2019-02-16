@@ -4,11 +4,13 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <regex.h>
 
 #include "definitions.h"
 #include "helpers.h"
 
-struct NUMBER_t { int number; };
+struct NUMBER_t { unsigned long number; };
 
 struct PHONEBOOK_t {
 
@@ -24,7 +26,15 @@ struct PHONEBOOK_t {
 
 };
 
-extern struct PHONEBOOK_t * createContact(struct PHONEBOOK_t * contact , char * firstName, char * lastName , int * work, int * home) {
+extern struct PHONEBOOK_t *
+createContact(
+              struct PHONEBOOK_t * contact ,
+              char * firstName,
+              char * lastName ,
+              unsigned long * work,
+              unsigned long * home
+              )
+{
 
   struct PHONEBOOK_t * newContact = NULL;
 
@@ -66,32 +76,30 @@ extern struct PHONEBOOK_t * addContact(struct PHONEBOOK_t * phoneBook ) {
   char * fName = malloc(STRING_MAX + sizeof(char));
   char * lName = malloc(STRING_MAX + sizeof(char));
 
-  int workNumber = 0;
-  int homeNumber = 0;
+  unsigned long workNumber = 0;
+  unsigned long homeNumber = 0;
 
   int wValid = 0;
 
-  fprintf(stdout , "Enter First Name: ");
-  fscanf(stdin, "%s", fName);
+  CHECK_LENGTH(fName,"Enter First Name: ");
+  CHECK_LENGTH(lName,"Enter Last Name: ");
 
-  fprintf(stdout, "Enter Last Name: ");
-  fscanf(stdin, "%s", lName);
 
   fprintf(stdout, "Enter Work Number: ");
-  if ( (wValid = fscanf(stdin, "%d", &workNumber)) == 0 ) {
+  if ( (wValid = fscanf(stdin, "%ld", &workNumber)) == 0 ) {
     fprintf(stderr, "invalid input\n");
     exit(1);
   }
 
   fprintf(stdout, "Enter Home Number: ");
 
-  if ( (wValid = fscanf(stdin, "%d", &homeNumber)) == 0 ) {
+  if ( (wValid = fscanf(stdin, "%ld", &homeNumber)) == 0 ) {
     fprintf(stderr, "invalid input\n");
     exit(1);
   }
 
-  int * work = workNumber == 0 ? NULL : &workNumber;
-  int * home = homeNumber == 0 ? NULL : &homeNumber;
+  unsigned long * work = workNumber == 0 ? NULL : &workNumber;
+  unsigned long * home = homeNumber == 0 ? NULL : &homeNumber;
 
   if ( ! phoneBook ) {
     return createContact(NULL, fName , lName, work , home);
