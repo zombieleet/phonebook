@@ -14,10 +14,21 @@
 Id:          %d\n\
 First Name:  %s\n\
 Last Name:   %s\n\
-Work Number: %d\n\
-Home Number: %d\n\n\
+Work Number: %ld\n\
+Home Number: %ld\n\n\
 " , contacts->_id , contacts->firstName , contacts->lastName, contacts->work ? contacts->work->number : 0 , contacts->home ? contacts->home->number : 0 );
 
+#define CHECK_LENGTH(buf,input)                                     \
+  fprintf(stdout, input);                                               \
+  fscanf(stdin, "%s", buf);                                             \
+  while ( strlen(buf) > STRING_MAX ) {                                  \
+    fprintf(stderr, "\n\nTotal length of name allowed is 20 but you provided %ld\n\n", strlen(buf)); \
+    fprintf(stdout, input);                                             \
+    fscanf(stdin, "%s", buf);                                           \
+  }                                                                     \
+
 #define STRING_MAX 20
+
+#define MAKEREGEXP(op) ("(" op ")")
 
 #endif
