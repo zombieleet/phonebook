@@ -8,6 +8,8 @@
 #include "structs.h"
 #include "definitions.h"
 
+typedef void (*helpCB)();
+
 extern void help(void) {
   fprintf(stdout, "\
 1. Add Contact\n\
@@ -29,22 +31,23 @@ Input: ");
 
 
 extern void helpSearch(void) {
-  fprintf(stdout,"\
-1. Search By Name\n\
+  fprintf(stdout, "\
+\n\n1. Search By Name\n\
 2. Search By Number\n\
+3. Back \n\n\
 Input: ");
 }
 
-extern int chooseOption() {
+extern int chooseOption(int fRange, int sRange, helpCB helper) {
 
-  help();
+  helper();
   
   int userChoice = 0 ;
   
   fscanf(stdin, "%d", &userChoice);
 
-  while ( userChoice < 1 || userChoice > 6 ) {
-    help();
+  while ( userChoice < fRange || userChoice > sRange ) {
+    helper();
     fscanf(stdin, "%d", &userChoice);
   }
 
