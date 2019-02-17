@@ -138,4 +138,64 @@ extern void listContacts(struct PHONEBOOK_t * contacts) {
   return;
 };
 
+void searchByName(struct PHONEBOOK_t * contacts) {
+
+  if ( ! contacts ) {
+    fprintf(stdout, "\n\nNo contacts have been added yet\n\n");
+    return;
+  }
+
+  char * searchName = malloc(STRING_MAX + sizeof(char));
+  CHECK_LENGTH(searchName,"Enter Name to search for: ");
+
+  regex_t * phoneBookRegexp  = malloc(sizeof(regex_t));
+  char    * openCaptureGroup = calloc(strlen(searchName) + sizeof(char) , sizeof(char));
+
+  openCaptureGroup[0] = '(';
+
+  char * regexpString    = strcat(openCaptureGroup, strcat( searchName , ")" ) );
+  int    compiledRegexp  = regcomp(phoneBookRegexp, regexpString , REG_EXTENDED | REG_ICASE);
+
+  if ( compiledRegexp != 0 ) {
+    fprintf(stderr, "failed to compile regular expression");
+    exit(1);
+  }
+
+
+  if ( ! contacts->nextContact ) {
+    if (
+        regexec(phoneBookRegexp, contacts->firstName, 0, NULL, 0) != REG_NOMATCH ||
+        regexec(phoneBookRegexp, contacts->lastName, 0 , NULL, 0) != REG_NOMATCH
+        ) {
+
+      PRINT_PHONE_BOOK(contacts);
+
+    } else {
+      fprintf(stdout, "%s was not found in phonebook", searchName);
+    }
+
+    free(openCaptureGroup);
+    free(searchName);
+    regfree(phoneBookRegexp);
+    return;
+  }
+
+  while ( contacts->nextContact ) {
+    if ( regexec(phoneBookRegexp, contacts->firstName, 0, NULL, 0) != REG_NOMATCH ||
+         regexec(phoneBookRegexp, contacts->lastName, 0 , NULL, 0) != REG_NOMATCH) PRINT_PHONE_BOOK(contacts);
+    contacts = contacts->nextContact;
+  }
+
+  if ( regexec(phoneBookRegexp, contacts->firstName, 0, NULL, 0) != REG_NOMATCH ||
+       regexec(phoneBookRegexp, contacts->lastName, 0 , NULL, 0) != REG_NOMATCH) PRINT_PHONE_BOOK(contacts);
+
+  free(openCaptureGroup);
+  free(searchName);
+  regfree(phoneBookRegexp);
+  return;
+}
+
+void searchByNumber() {
+}
+
 #endif
