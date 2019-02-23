@@ -12,6 +12,8 @@
 
 struct NUMBER_t { unsigned long number; };
 
+union PHONEBOOK_l { unsigned long length ; } phonenumber_l = { 0 };
+
 struct PHONEBOOK_t {
 
   int _id;
@@ -68,8 +70,12 @@ createContact(
     newContact->home = malloc(sizeof(struct NUMBER_t));
     newContact->home->number = *home;
   }
+  phonenumber_l.length = phonenumber_l.length + 1;
   return newContact;
 }
+
+
+#ifndef BSTREE
 
 extern struct PHONEBOOK_t * addContact(struct PHONEBOOK_t * phoneBook ) {
 
@@ -195,7 +201,156 @@ void searchByName(struct PHONEBOOK_t * contacts) {
   return;
 }
 
-void searchByNumber() {
+void searchByNumber(struct PHONEBOOK_t * contacts) {
+
+  if ( ! contacts ) {
+    fprintf(stdout, "\n\nNo contacts have been added yet");
+    return;
+  }
+
+  unsigned long number = 0;
+  int valid;
+
+  fprintf(stdout, "Enter Phone Number: ");
+
+  if ( ( valid = fscanf(stdin, "%ld", &number) ) == 0 ) {
+    fprintf(stderr, "Invalid Input");
+    exit(1);
+  }
+
+  regex_t * numberRegexp = malloc(sizeof(regex_t));
+
+  char numStr[STRING_MAX + sizeof(char)];
+
+  sprintf(numStr, "%ld", number); // uh ?
+
+  int compileRegexp = regcomp(numberRegexp, numStr, 0);
+
+  if ( compileRegexp != 0 ) {
+    fprintf(stderr, "\nfailed to compile regular expression\n");
+    exit(1);
+  }
+
+  char fstr[STRING_MAX + sizeof(char)];
+  char sstr[STRING_MAX + sizeof(char)];
+
+  if ( ! contacts->nextContact ) {
+
+    sprintf(fstr, "%ld", contacts->work->number);
+    sprintf(sstr, "%ld", contacts->home->number);
+
+    if (
+        regexec(numberRegexp, fstr, 0, NULL, 0) != REG_NOMATCH ||
+        regexec(numberRegexp, sstr, 0 , NULL, 0) != REG_NOMATCH
+        ) {
+
+      PRINT_PHONE_BOOK(contacts);
+
+    } else {
+      fprintf(stdout, "%ld was not found in phonebook", number);
+    }
+    free(numberRegexp);
+    return;
+  }
+
+  while ( contacts->nextContact ) {
+
+    sprintf(fstr, "%ld", contacts->work->number);
+    sprintf(sstr, "%ld", contacts->home->number);
+
+    if ( regexec(numberRegexp, fstr, 0, NULL, 0) != REG_NOMATCH ||
+         regexec(numberRegexp, sstr, 0 , NULL, 0) != REG_NOMATCH) PRINT_PHONE_BOOK(contacts);
+
+    contacts = contacts->nextContact;
+
+  }
+
+  sprintf(fstr, "%ld", contacts->work->number);
+  sprintf(sstr, "%ld", contacts->home->number);
+
+  if ( regexec(numberRegexp, fstr, 0, NULL, 0) != REG_NOMATCH ||
+       regexec(numberRegexp, sstr, 0 , NULL, 0) != REG_NOMATCH) PRINT_PHONE_BOOK(contacts);
+
+  free(numberRegexp);
+  return;
+
 }
+
+void removeContact(struct PHONEBOOK_t * contacts) {
+
+  if ( ! contacts ) {
+    fprintf(stderr, "\n\nPhonebook is empty\n\n");
+    return;
+  }
+
+  unsigned long id = 0;
+  int valid = 0;
+
+  fprintf(stdout, "Enter User Id:");
+
+  if ( ( valid = fscanf(stdin, "%ld", &id) ) == 0 ) {
+    fprintf(stderr, "Invalid number input");
+    exit(1);
+  }
+
+  if ( id < 0 ) {
+    fprintf(stderr, "%ld is not a valid number", id);
+    return;
+  }
+
+  if ( id > phonenumber_l.length ) {
+    fprintf(stdout, "id of %ld does not exists", id);
+    return;
+  }
+
+  if ( ! contacts->nextContact && contacts->_id == id ) {
+    FREE(contacts);
+    return;
+  }
+
+  int foundInLoop = 0;
+
+  /* <--|<---|<---| */
+  /*    |-- >|--->|--> */
+
+  while ( contacts->nextContact ) {
+
+    if ( contacts->_id == id ) {
+
+      /* <--|<------| */
+      /*    |---|-->|--> */
+
+      contacts->nextContact->prevContact = contacts->prevContact;
+
+      if ( contacts->prevContact )
+        /* <--|<------| */
+        /*    |------>|--> */
+        contacts->prevContact->nextContact = contacts->nextContact;
+
+      FREE(contacts);
+      foundInLoop = 1;
+
+      break;
+    }
+    contacts = contacts->nextContact;
+  }
+
+  if ( foundInLoop == 1 ) return;
+
+  if ( contacts->_id == id ) {
+    FREE(contacts);
+    return;
+  }
+
+}
+
+
+#endif
+
+#ifdef BSTREE
+
+// bstree implememtation goes here
+
+#endif
 
 #endif

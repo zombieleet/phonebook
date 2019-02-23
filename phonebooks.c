@@ -18,6 +18,8 @@ int main(void) {
         addContact(phoneBook);
       break;
     case 2:
+      listContacts(phoneBook);
+      removeContact(phoneBook);
       break;
     case 3:
       break;
