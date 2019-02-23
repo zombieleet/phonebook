@@ -31,4 +31,16 @@ Home Number: %ld\n\n\
 
 #define MAKEREGEXP(op) ("(" op ")")
 
+#define FREE(st) \
+  free(contacts->firstName);                              \
+  free(contacts->lastName);                               \
+  free(contacts->home);                                   \
+  free(contacts->work);                                   \
+  free(contacts);                                         \
+  contacts->firstName = NULL;                             \
+  contacts->lastName  = NULL;                             \
+  contacts->home      = NULL;                             \
+  contacts->work      = NULL;                             \
+  contacts            = NULL;
+
 #endif
