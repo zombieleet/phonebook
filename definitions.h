@@ -45,9 +45,7 @@ Home Number: %ld\n\n\
 
 
 #define WRITE_TO_DB(contactDB,contacts)                                 \
-  fprintf(contactDB, "---- START-----");                            \
-  fprintf(contactDB, "%d:%s:%s:%ld:%ld", contacts->_id, contacts->firstName, contacts->lastName, contacts->home->number, contacts->work->number); \
-  fprintf(contactDB, "----END------\n");
+  fprintf(contactDB, "\nID=%d:FIRSTNAME=%s:LASTNAME=%s:HOMENUMBER=%ld:WORKNUMBER=%ld\n", contacts->_id, contacts->firstName, contacts->lastName, contacts->home->number, contacts->work->number); \
 
 
 

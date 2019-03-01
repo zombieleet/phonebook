@@ -344,7 +344,6 @@ void removeContact(struct PHONEBOOK_t * contacts) {
 
 }
 
-
 void saveContacts( struct PHONEBOOK_t * contacts ) {
 
   if ( ! contacts ) {
