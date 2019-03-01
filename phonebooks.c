@@ -50,6 +50,7 @@ int main(void) {
       break;
 
     case 5:
+      saveContacts(phoneBook);
       break;
     case 6:
       listContacts(phoneBook);

@@ -345,6 +345,40 @@ void removeContact(struct PHONEBOOK_t * contacts) {
 }
 
 
+void saveContacts( struct PHONEBOOK_t * contacts ) {
+
+  if ( ! contacts ) {
+    fprintf(stderr, "\nNo contact information have been added yet\n\n" );
+    return ;
+  }
+
+  FILE * contactDB = fopen("./contact.db", "a");
+
+  if ( ! contactDB ) {
+    fprintf(stderr, "\n\nCannot open file contact.db\n\n");
+    return;
+  }
+
+  if ( ! contacts->nextContact ) {
+    WRITE_TO_DB(contactDB, contacts);
+    fclose(contactDB);
+    return;
+  }
+
+  while ( contacts->nextContact ) {
+    WRITE_TO_DB(contactDB, contacts);
+    contacts = contacts->nextContact;
+  }
+
+  if ( contacts ) {
+    WRITE_TO_DB(contactDB, contacts);
+  }
+
+  fclose(contactDB);
+
+  return;
+}
+
 #endif
 
 #ifdef BSTREE
