@@ -41,11 +41,12 @@ createContact(
   struct PHONEBOOK_t * newContact = NULL;
 
   if ( ! contact ) {
-    newContact = malloc(sizeof(struct PHONEBOOK_t));
-    CHECK_MALLOC(newContact);
-    newContact->prevContact = NULL;
-    newContact->nextContact = NULL;
-    newContact->_id = 0;
+    contact = malloc(sizeof(struct PHONEBOOK_t));
+    CHECK_MALLOC(contact);
+    contact->prevContact = NULL;
+    contact->nextContact = NULL;
+    contact->_id = 0;
+    newContact = contact;
   } else {
     contact->nextContact = malloc(sizeof(struct PHONEBOOK_t));
     CHECK_MALLOC(contact->nextContact);
@@ -358,9 +359,12 @@ void saveContacts( struct PHONEBOOK_t * contacts ) {
     return;
   }
 
+  fprintf(stdout, "\n\nSaving Wait...\n\n");
+
   if ( ! contacts->nextContact ) {
     WRITE_TO_DB(contactDB, contacts);
     fclose(contactDB);
+    fprintf(stdout, "\nDone...\n");
     return;
   }
 
@@ -374,7 +378,7 @@ void saveContacts( struct PHONEBOOK_t * contacts ) {
   }
 
   fclose(contactDB);
-
+  fprintf(stdout, "\nDone...\n");
   return;
 }
 

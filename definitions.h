@@ -45,7 +45,14 @@ Home Number: %ld\n\n\
 
 
 #define WRITE_TO_DB(contactDB,contacts)                                 \
-  fprintf(contactDB, "\nID=%d:FIRSTNAME=%s:LASTNAME=%s:HOMENUMBER=%ld:WORKNUMBER=%ld\n", contacts->_id, contacts->firstName, contacts->lastName, contacts->home->number, contacts->work->number); \
+  fprintf(contactDB, "ID=%d\nFIRSTNAME=%s\nLASTNAME=%s\nHOMENUMBER=%ld\nWORKNUMBER=%ld\n", contacts->_id, contacts->firstName, contacts->lastName, contacts->home->number, contacts->work->number); \
+
+/* #define GET_KEY_TYPE(key)                       \ */
+/*   if ( key == "ID" ) return 1;                  \ */
+/*   if ( key == "FIRSTNAME" ) return 2;           \ */
+/*   if ( key == "LASTNAME" ) return 3;            \ */
+/*   if ( key == "HOMENUMBER" ) return 4;          \ */
+/*   if ( key == "WORKNUMBER" ) return 5;          \ */
 
 
 

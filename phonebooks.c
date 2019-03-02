@@ -9,6 +9,8 @@ int main(void) {
 
   int exitLoop   = 0;
 
+  phoneBook = loadContacts(phoneBook);
+
   while ( 1 ) {
     switch(chooseOption(1,6,help)) {
     case 1:
