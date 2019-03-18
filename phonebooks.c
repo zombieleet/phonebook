@@ -64,7 +64,7 @@ int main(void) {
 
       switch( PROGRAM_STATE ) {
 
-      case JUSTLOADED: fprintf(stdout, "No changes were made ( Quiting...) "); break;
+      case JUSTLOADED: fprintf(stdout, "No changes were made ( Quiting...)\n "); break;
 
       case CREATED   :
         fprintf(stdout, "Newly added contact will not be saved. Do you want to save them ( 1 (Yes) | 2 (No) ): " );
