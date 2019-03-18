@@ -112,6 +112,8 @@ extern void editCred( struct PHONEBOOK_t * contact, char * fName , char * lName,
       exit(1);
     }
 
+    contact->work->number = *work;
+
     break;
 
   case 4:
@@ -122,6 +124,8 @@ extern void editCred( struct PHONEBOOK_t * contact, char * fName , char * lName,
       fprintf(stderr, "invalid input\n");
       exit(1);
     }
+
+    contact->home->number = *home;
 
     break;
 
