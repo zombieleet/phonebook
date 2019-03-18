@@ -2,14 +2,23 @@
 
 #define HELPERS
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "structs.h"
+#include "phonebooks.h"
 #include "definitions.h"
 
 typedef void (*helpCB)();
+
+extern void help(void);
+extern void helpRemove(void);
+extern void helpSearch(void);
+extern void helpEdit(void);
+extern int realySave(void);
+extern int chooseOption(int fRange, int sRange, helpCB helper);
+
 
 extern void help(void) {
   fprintf(stdout, "\
