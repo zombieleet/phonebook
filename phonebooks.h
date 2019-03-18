@@ -191,7 +191,7 @@ extern void searchByName(struct PHONEBOOK_t * contacts) {
       PRINT_PHONE_BOOK(contacts);
 
     } else {
-      fprintf(stdout, "%s was not found in phonebook", searchName);
+      fprintf(stdout, "%s was not found in phonebook\n", searchName);
     }
 
     free(openCaptureGroup);
