@@ -48,6 +48,22 @@ extern void helpSearch(void) {
 Input: ");
 }
 
+extern void helpEdit(void) {
+  fprintf(stdout, "\
+\n\n What details do you want to edit?\n\
+1. First Name\n\
+2. Last Name\n\
+3. Home Number \n\
+4. Work Number\n\n\
+Input: ");
+}
+
+extern int realySave(void) {
+  int input = 0;
+  scanf("%d", &input);
+  return input;
+}
+
 extern int chooseOption(int fRange, int sRange, helpCB helper) {
 
   helper();
@@ -65,78 +81,54 @@ extern int chooseOption(int fRange, int sRange, helpCB helper) {
 }
 
 
-extern struct PHONEBOOK_t * loadContacts( struct PHONEBOOK_t * contacts ) {
-  FILE * contactDB = fopen("./contact.db", "r");
-  if ( ! contactDB ) {
-    fprintf(stderr, "\n\nCannot open file contact.db\n\n");
-    return NULL;
-  }
+extern void editCred( struct PHONEBOOK_t * contact, char * fName , char * lName, unsigned long * work , unsigned long * home) {
 
-  if ( feof(contactDB) ) {
-    fprintf(stdout,"\n\n Contact list is empty. Follow the below options to create a list\n\n");
-    return NULL;
-  }
+  int wValid , opt = chooseOption(1, 4, helpEdit);
 
-  size_t bytesToRead = 0;
-  size_t readBytes = 0;
-  char * readLine = NULL;
+  PROGRAM_STATE = EDITED;
 
-  char * firstName = NULL;
-  char * lastName  = NULL;
+  switch(opt) {
 
-  unsigned long work = 0;
-  unsigned long home = 0;
+  case 1:
 
-  while ( ( readBytes = getline(&readLine, &bytesToRead, contactDB) ) != -1 ) {
+    CHECK_LENGTH(fName,"Enter First Name: ");
+    contact->firstName = fName;
 
-    char * paramKeys = malloc(strlen(readLine));
-    char * paramValues = malloc(strlen(readLine));
+    break;
 
-    int findEqual = 0;
+  case 2:
 
-    size_t i = 0 , j = 0;
+    CHECK_LENGTH(lName,"Enter Last Name: ");
+    contact->lastName = lName;
 
-    // keys
-    // and
-    // values
-    for ( ; i < strlen(readLine) ; i++ ) {
+    break;
 
-      if ( findEqual == 1 ) {
-        if ( readLine[i] == '\n') paramValues[j++] = '\0';
-        paramValues[j++] = readLine[i];
-        continue;
-      }
+  case 3:
 
-      if ( readLine[i] == '=' ) {
-        findEqual = 1;
-        paramKeys[i] = '\0';
-        continue;
-      }
-      paramKeys[i] = readLine[i];
+    fprintf(stdout, "Enter Work Number: ");
+
+    if ( (wValid = fscanf(stdin, "%ld", work)) == 0 ) {
+      fprintf(stderr, "invalid input\n");
+      exit(1);
     }
 
-    paramKeys   = realloc(paramKeys, strlen(paramKeys) + 1);
-    paramValues = realloc(paramValues, strlen(paramValues) + 1);
+    break;
 
-    if (strcmp(paramKeys,"ID") == 0)         free(paramKeys);
-    if (strcmp(paramKeys,"FIRSTNAME") == 0)  firstName = paramValues;
-    if (strcmp(paramKeys,"LASTNAME") == 0)   lastName = paramValues;
-    if (strcmp(paramKeys,"HOMENUMBER") == 0) home = strtoul(paramValues, NULL , 10);
+  case 4:
 
-    if (strcmp(paramKeys,"WORKNUMBER") == 0) {
+    fprintf(stdout, "Enter Home Number: ");
 
-      work = strtoul(paramValues, NULL , 10);
-
-      if ( ! contacts ) {
-        contacts = createContact(contacts, firstName, lastName, &work, &home);
-      } else
-        createContact(contacts, firstName, lastName, &work, &home);
+    if ( (wValid = fscanf(stdin, "%ld", home)) == 0 ) {
+      fprintf(stderr, "invalid input\n");
+      exit(1);
     }
-  }
 
-  free(readLine);
-  fclose(contactDB);
-  return contacts;
+    break;
+
+  default: break;
+  }
+  return;
 }
+
 
 #endif
