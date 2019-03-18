@@ -24,7 +24,8 @@ int main(void) {
       removeContact(phoneBook);
       break;
     case 3:
-      searchByName(phoneBook);
+      //searchByName(phoneBook);
+      listContacts(phoneBook);
       editContacts(phoneBook);
       break;
     case 4:
