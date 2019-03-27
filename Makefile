@@ -1,4 +1,4 @@
 CFLAGS?=-g -std=gnu11 -Wall -Werror
 
 compile:
-	gcc ${CFLAGS} phonebooks.c -o phonebook
+	gcc ${CFLAGS} helpers.c phonebook_func.c phonebook.c -o phonebook

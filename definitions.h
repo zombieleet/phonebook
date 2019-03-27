@@ -36,11 +36,11 @@ Home Number: %ld\n\n\
   free(contacts->lastName);                               \
   free(contacts->home);                                   \
   free(contacts->work);                                   \
-  free(contacts);                                         \
   contacts->firstName = NULL;                             \
   contacts->lastName  = NULL;                             \
   contacts->home      = NULL;                             \
   contacts->work      = NULL;                             \
+  free(contacts);                                         \
   contacts            = NULL;
 
 
